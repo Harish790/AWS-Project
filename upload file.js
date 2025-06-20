@@ -1,3 +1,12 @@
+// 🔐 Cognito Auth Check
+const hash = window.location.hash;
+if (hash.includes("id_token")) {
+  const token = new URLSearchParams(hash.slice(1)).get("id_token");
+  localStorage.setItem("token", token);
+  history.replaceState(null, "", window.location.pathname);
+} else if (!localStorage.getItem("token")) {
+  window.location.href = "https://us-east-2hcni46ecv.auth.us-east-2.amazoncognito.com/login?client_id=j98ae55p06qf9r8lh59o1v7h9&response_type=token&scope=email+openid+profile&redirect_uri=https://harishdatta.com/index.html";
+}
 
 
 async function uploadFile() {
