@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Year Gallery</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --bg1: #ffd6e7;
+      --bg2: #ffe7b0;
+      --card: rgba(255, 255, 255, 0.92);
+      --text: #2f2a39;
+      --accent: #ff5c8a;
+      --accent2: #8a4fff;
+      --accent3: #ff8a3d;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.38), transparent 24%),
+        radial-gradient(circle at bottom right, rgba(138,79,255,0.14), transparent 24%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      color: var(--text);
+    }
+
+    .page-shell {
+      width: min(100%, 1120px);
+      margin: 0 auto;
+    }
+
+    .hero {
+      background: var(--card);
+      border: 2px solid rgba(255,255,255,0.8);
+      border-radius: 30px;
+      box-shadow: 0 20px 60px rgba(66, 33, 11, 0.16);
+      padding: 28px;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      margin-bottom: 22px;
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .title-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(255,92,138,0.12), rgba(138,79,255,0.10));
+      color: var(--accent);
+      font-weight: 900;
+    }
+
+    h1 {
+      margin: 10px 0 8px;
+      font-size: clamp(2rem, 5vw, 3.3rem);
+      font-weight: 900;
+      color: var(--accent);
+    }
+
+    .subtext {
+      margin: 0 auto;
+      max-width: 780px;
+      font-size: 1.04rem;
+      line-height: 1.8;
+    }
+
+    .nav-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .nav-link-chip {
+      text-decoration: none;
+      color: white;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-weight: 800;
+      box-shadow: 0 12px 22px rgba(255,92,138,0.22);
+    }
+
+    .nav-link-chip.secondary {
+      background: linear-gradient(135deg, var(--accent2), var(--accent3));
+    }
+
+    .years {
+      display: grid;
+      gap: 18px;
+    }
+
+    details.year-card {
+      background: var(--card);
+      border-radius: 26px;
+      box-shadow: 0 14px 40px rgba(66, 33, 11, 0.12);
+      border: 1px solid rgba(255,255,255,0.7);
+      overflow: hidden;
+    }
+
+    details.year-card > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 18px 22px;
+      font-weight: 900;
+      font-size: 1.15rem;
+      color: var(--accent);
+      background: linear-gradient(135deg, rgba(255, 92, 138, 0.08), rgba(138, 79, 255, 0.06));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    details.year-card > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .year-tag {
+      font-size: 0.9rem;
+      color: rgba(47,42,57,0.75);
+      font-weight: 700;
+    }
+
+    .months {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    details.month-card {
+      border-radius: 20px;
+      border: 1px solid rgba(255,92,138,0.14);
+      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,241,247,0.88));
+      overflow: hidden;
+    }
+
+    details.month-card > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      font-weight: 800;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    details.month-card > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .month-content {
+      padding: 0 16px 16px;
+    }
+
+    .month-note {
+      margin-bottom: 10px;
+      font-size: 0.92rem;
+      color: rgba(47,42,57,0.78);
+      line-height: 1.6;
+    }
+
+    .month-photo {
+      width: 100%;
+      border-radius: 16px;
+      border: 5px solid white;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+      display: block;
+      object-fit: cover;
+      aspect-ratio: 4 / 3;
+      background: #fff;
+    }
+
+    .month-links {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .month-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 800;
+      color: var(--accent);
+      background: rgba(255,92,138,0.08);
+      border: 1px solid rgba(255,92,138,0.14);
+    }
+
+    .hint {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 0.95rem;
+      color: rgba(47,42,57,0.78);
+    }
+
+    .hint strong {
+      color: var(--accent);
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 14px; }
+      .hero { padding: 22px 16px; }
+      details.year-card > summary { padding: 16px; }
+      .months { padding: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <section class="hero">
+      <div class="hero-top">
+        <span class="title-badge">📸 Year Wise Pics</span>
+        <span class="title-badge">Click a year, then a month</span>
+      </div>
+      <h1>Memories by Year</h1>
+      <p class="subtext">
+        Open a year to see the months inside it, then click any month to view the photo slot.
+        I kept the first image as the existing link so you can replace each month with your own links later.
+      </p>
+      <div class="nav-row">
+        <a class="nav-link-chip" href="index.html">Birthday Page</a>
+        <a class="nav-link-chip secondary" href="friendship-day.html">Friendship Day</a>
+      </div>
+    </section>
+
+    <section class="years">
+      <details class="year-card">
+        <summary>2025 <span class="year-tag">12 months</span></summary>
+        <div class="months">
+          <details class="month-card">
+            <summary>January <span>💖</span></summary>
+            <div class="month-content">
+              <p class="month-note">Replace this photo link with January 2025 memories when you are ready.</p>
+              <img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="January 2025 memory" />
+              <div class="month-links">
+                <a class="month-link" href="https://i.imgur.com/j8h594t.jpeg" target="_blank" rel="noopener">Open image</a>
+                <a class="month-link" href="#">Add my link later</a>
+              </div>
+            </div>
+          </details>
+          <details class="month-card"><summary>February <span>🌸</span></summary><div class="month-content"><p class="month-note">February 2025 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="February 2025 memory" /></div></details>
+          <details class="month-card"><summary>March <span>✨</span></summary><div class="month-content"><p class="month-note">March 2025 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="March 2025 memory" /></div></details>
+          <details class="month-card"><summary>April <span>🌷</span></summary><div class="month-content"><p class="month-note">April 2025 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="April 2025 memory" /></div></details>
+          <details class="month-card"><summary>May <span>🎀</span></summary><div class="month-content"><p class="month-note">May 2025 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="May 2025 memory" /></div></details>
+          <details class="month-card"><summary>June <span>☀️</span></summary><div class="month-content"><p class="month-note">June 2025 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="June 2025 memory" /></div></details>
+          <details class="month-card"><summary>July <span>🌼</span></summary><div class="month-content"><p class="month-note">July 2025 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="July 2025 memory" /></div></details>
+          <details class="month-card"><summary>August <span>🎉</span></summary><div class="month-content"><p class="month-note">August 2025 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="August 2025 memory" /></div></details>
+          <details class="month-card"><summary>September <span>🍰</span></summary><div class="month-content"><p class="month-note">September 2025 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="September 2025 memory" /></div></details>
+          <details class="month-card"><summary>October <span>🍁</span></summary><div class="month-content"><p class="month-note">October 2025 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="October 2025 memory" /></div></details>
+          <details class="month-card"><summary>November <span>🫶</span></summary><div class="month-content"><p class="month-note">November 2025 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="November 2025 memory" /></div></details>
+          <details class="month-card"><summary>December <span>🎄</span></summary><div class="month-content"><p class="month-note">December 2025 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="December 2025 memory" /></div></details>
+        </div>
+      </details>
+
+      <details class="year-card">
+        <summary>2026 <span class="year-tag">12 months</span></summary>
+        <div class="months">
+          <details class="month-card"><summary>January <span>💖</span></summary><div class="month-content"><p class="month-note">January 2026 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="January 2026 memory" /></div></details>
+          <details class="month-card"><summary>February <span>🌸</span></summary><div class="month-content"><p class="month-note">February 2026 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="February 2026 memory" /></div></details>
+          <details class="month-card"><summary>March <span>✨</span></summary><div class="month-content"><p class="month-note">March 2026 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="March 2026 memory" /></div></details>
+          <details class="month-card"><summary>April <span>🌷</span></summary><div class="month-content"><p class="month-note">April 2026 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="April 2026 memory" /></div></details>
+          <details class="month-card"><summary>May <span>🎀</span></summary><div class="month-content"><p class="month-note">May 2026 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="May 2026 memory" /></div></details>
+          <details class="month-card"><summary>June <span>☀️</span></summary><div class="month-content"><p class="month-note">June 2026 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="June 2026 memory" /></div></details>
+          <details class="month-card"><summary>July <span>🌼</span></summary><div class="month-content"><p class="month-note">July 2026 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="July 2026 memory" /></div></details>
+          <details class="month-card"><summary>August <span>🎉</span></summary><div class="month-content"><p class="month-note">August 2026 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="August 2026 memory" /></div></details>
+          <details class="month-card"><summary>September <span>🍰</span></summary><div class="month-content"><p class="month-note">September 2026 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="September 2026 memory" /></div></details>
+          <details class="month-card"><summary>October <span>🍁</span></summary><div class="month-content"><p class="month-note">October 2026 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="October 2026 memory" /></div></details>
+          <details class="month-card"><summary>November <span>🫶</span></summary><div class="month-content"><p class="month-note">November 2026 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="November 2026 memory" /></div></details>
+          <details class="month-card"><summary>December <span>🎄</span></summary><div class="month-content"><p class="month-note">December 2026 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="December 2026 memory" /></div></details>
+        </div>
+      </details>
+
+      <details class="year-card">
+        <summary>2024 <span class="year-tag">12 months</span></summary>
+        <div class="months">
+          <details class="month-card"><summary>January <span>💖</span></summary><div class="month-content"><p class="month-note">January 2024 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="January 2024 memory" /></div></details>
+          <details class="month-card"><summary>February <span>🌸</span></summary><div class="month-content"><p class="month-note">February 2024 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="February 2024 memory" /></div></details>
+          <details class="month-card"><summary>March <span>✨</span></summary><div class="month-content"><p class="month-note">March 2024 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="March 2024 memory" /></div></details>
+          <details class="month-card"><summary>April <span>🌷</span></summary><div class="month-content"><p class="month-note">April 2024 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="April 2024 memory" /></div></details>
+          <details class="month-card"><summary>May <span>🎀</span></summary><div class="month-content"><p class="month-note">May 2024 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="May 2024 memory" /></div></details>
+          <details class="month-card"><summary>June <span>☀️</span></summary><div class="month-content"><p class="month-note">June 2024 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="June 2024 memory" /></div></details>
+          <details class="month-card"><summary>July <span>🌼</span></summary><div class="month-content"><p class="month-note">July 2024 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="July 2024 memory" /></div></details>
+          <details class="month-card"><summary>August <span>🎉</span></summary><div class="month-content"><p class="month-note">August 2024 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="August 2024 memory" /></div></details>
+          <details class="month-card"><summary>September <span>🍰</span></summary><div class="month-content"><p class="month-note">September 2024 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="September 2024 memory" /></div></details>
+          <details class="month-card"><summary>October <span>🍁</span></summary><div class="month-content"><p class="month-note">October 2024 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="October 2024 memory" /></div></details>
+          <details class="month-card"><summary>November <span>🫶</span></summary><div class="month-content"><p class="month-note">November 2024 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="November 2024 memory" /></div></details>
+          <details class="month-card"><summary>December <span>🎄</span></summary><div class="month-content"><p class="month-note">December 2024 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="December 2024 memory" /></div></details>
+        </div>
+      </details>
+
+      <details class="year-card">
+        <summary>2023 <span class="year-tag">12 months</span></summary>
+        <div class="months">
+          <details class="month-card"><summary>January <span>💖</span></summary><div class="month-content"><p class="month-note">January 2023 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="January 2023 memory" /></div></details>
+          <details class="month-card"><summary>February <span>🌸</span></summary><div class="month-content"><p class="month-note">February 2023 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="February 2023 memory" /></div></details>
+          <details class="month-card"><summary>March <span>✨</span></summary><div class="month-content"><p class="month-note">March 2023 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="March 2023 memory" /></div></details>
+          <details class="month-card"><summary>April <span>🌷</span></summary><div class="month-content"><p class="month-note">April 2023 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="April 2023 memory" /></div></details>
+          <details class="month-card"><summary>May <span>🎀</span></summary><div class="month-content"><p class="month-note">May 2023 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="May 2023 memory" /></div></details>
+          <details class="month-card"><summary>June <span>☀️</span></summary><div class="month-content"><p class="month-note">June 2023 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="June 2023 memory" /></div></details>
+          <details class="month-card"><summary>July <span>🌼</span></summary><div class="month-content"><p class="month-note">July 2023 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="July 2023 memory" /></div></details>
+          <details class="month-card"><summary>August <span>🎉</span></summary><div class="month-content"><p class="month-note">August 2023 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="August 2023 memory" /></div></details>
+          <details class="month-card"><summary>September <span>🍰</span></summary><div class="month-content"><p class="month-note">September 2023 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="September 2023 memory" /></div></details>
+          <details class="month-card"><summary>October <span>🍁</span></summary><div class="month-content"><p class="month-note">October 2023 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="October 2023 memory" /></div></details>
+          <details class="month-card"><summary>November <span>🫶</span></summary><div class="month-content"><p class="month-note">November 2023 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="November 2023 memory" /></div></details>
+          <details class="month-card"><summary>December <span>🎄</span></summary><div class="month-content"><p class="month-note">December 2023 slot.</p><img class="month-photo" src="https://i.imgur.com/j8h594t.jpeg" alt="December 2023 memory" /></div></details>
+        </div>
+      </details>
+    </section>
+
+    <p class="hint"><strong>Preview tip:</strong> click a year, then click a month. Replace the image URL inside each month when you send the real links.</p>
+  </div>
+</body>
+</html>
