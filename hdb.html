@@ -685,17 +685,6 @@
       box-shadow: 0 0 0 3px rgba(255, 92, 138, 0.2);
     }
 
-    .age-display {
-      display: none;
-      margin-top: 10px;
-      font-size: 1.05rem;
-      font-weight: 900;
-      color: var(--accent);
-      padding: 8px 10px;
-      border-radius: 8px;
-      background: rgba(255, 92, 138, 0.06);
-    }
-
     .open-browser-note {
       margin-top: 12px;
       font-size: 0.92rem;
@@ -711,24 +700,6 @@
       color: var(--accent);
       font-weight: 800;
       text-decoration: none;
-    }
-
-    .gallery-link-wrap {
-      margin: 16px auto 0;
-      text-align: center;
-    }
-
-    .gallery-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 16px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: white;
-      font-weight: 800;
-      text-decoration: none;
-      box-shadow: 0 12px 24px rgba(255, 92, 138, 0.24);
     }
 
     @keyframes cakeBounce {
@@ -811,16 +782,11 @@
       </div>
 
       <div id="nameDisplay" class="name-display">Your name will appear here 💫</div>
-      <div class="date-input-group" style="margin-top:10px;">
-        <label class="name-label" for="birthdayDate">Enter birthday date</label>
-        <input id="birthdayDate" class="name-input" type="date" />
-      </div>
-      <div id="ageDisplay" class="age-display"></div>
       <div class="name-picked manasa">🎉 Happy Birthday, Manasa! 💖 🎉</div>
       <div class="name-picked anna">🎉 Happy Birthday, Anna! 💖 🎉</div>
       <div class="name-picked priya">🎉 Happy Birthday, Priya! 💖 🎉</div>
-      <div class="gallery-link-wrap">
-        <a class="gallery-link" href="year-gallery.html" target="_blank" rel="noopener">Open Year Gallery 📸</a>
+      <div class="open-browser-note">If typing doesn't update in the HTML preview, open this page in your browser for full interactivity:
+        <a class="open-browser-link" href="hdb.html" target="_blank" rel="noopener">Open in browser</a>
       </div>
     </div>
     <div class="badge-line">🎂 Birthday Wishes ✨</div>
@@ -933,8 +899,6 @@
     (function() {
       const nameInput = document.getElementById('birthdayName');
       const nameDisplay = document.getElementById('nameDisplay');
-      const dateInput = document.getElementById('birthdayDate');
-      const ageDisplay = document.getElementById('ageDisplay');
       
       if (!nameInput || !nameDisplay) return;
       
@@ -958,43 +922,7 @@
       nameInput.addEventListener('keyup', updateDisplay);
       nameInput.addEventListener('change', updateDisplay);
       
-      function computeAgeFromDOB(dobString) {
-        const d = new Date(dobString);
-        if (isNaN(d)) return null;
-        const today = new Date();
-        let age = today.getFullYear() - d.getFullYear();
-        const m = today.getMonth() - d.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--;
-        return age;
-      }
-
-      function ordinal(n) {
-        const s = ["th","st","nd","rd"], v = n%100;
-        return (s[(v-20)%10]||s[v]||s[0]);
-      }
-
-      function updateAgeDisplay() {
-        if (!dateInput || !ageDisplay) return;
-        const val = dateInput.value;
-        if (!val) { ageDisplay.style.display = 'none'; return; }
-        const age = computeAgeFromDOB(val);
-        if (age === null || age < 0) {
-          ageDisplay.textContent = 'Invalid date';
-          ageDisplay.style.display = 'block';
-          return;
-        }
-        const namePart = nameInput.value.trim() ? (', ' + nameInput.value.trim()) : '';
-        ageDisplay.textContent = `🎉 Happy ${age}${ordinal(age)} Birthday${namePart}! 💖`;
-        ageDisplay.style.display = 'block';
-      }
-
-      if (dateInput) {
-        dateInput.addEventListener('change', updateAgeDisplay);
-        dateInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') updateAgeDisplay(); });
-      }
-      
       updateDisplay();
-      updateAgeDisplay();
     })();
   </script>
 </body>
