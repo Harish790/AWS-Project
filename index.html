@@ -639,45 +639,16 @@
       transition: transform 0.18s ease, opacity 0.18s ease;
     }
 
-    .quick-picks {
-      margin-top: 10px;
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .quick-radio {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .quick-label {
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, rgba(255,92,138,0.12), rgba(255,138,61,0.08));
-      color: var(--accent);
-      font-weight: 800;
-      cursor: pointer;
-      border: 1px solid rgba(255,92,138,0.12);
-    }
-
-    .name-picked {
+    .name-error {
       display: none;
       margin-top: 10px;
-      font-weight: 900;
-      color: var(--accent);
-      background: rgba(255,92,138,0.06);
-      padding: 8px 10px;
+      font-weight: 700;
+      color: #e53935;
+      font-size: 0.92rem;
+      padding: 8px 12px;
       border-radius: 8px;
-    }
-
-    #qn-manasa:checked ~ .name-picked.manasa,
-    #qn-anna:checked ~ .name-picked.anna,
-    #qn-priya:checked ~ .name-picked.priya {
-      display: block;
+      background: rgba(229, 57, 53, 0.08);
+      border: 1px solid rgba(229, 57, 53, 0.25);
     }
 
     .name-input:focus {
@@ -685,50 +656,44 @@
       box-shadow: 0 0 0 3px rgba(255, 92, 138, 0.2);
     }
 
-    .age-display {
-      display: none;
-      margin-top: 10px;
-      font-size: 1.05rem;
-      font-weight: 900;
-      color: var(--accent);
-      padding: 8px 10px;
-      border-radius: 8px;
-      background: rgba(255, 92, 138, 0.06);
-    }
-
-    .open-browser-note {
+    .open-gallery-note {
       margin-top: 12px;
       font-size: 0.92rem;
       color: rgba(47,42,57,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
-    .open-browser-link {
+    .open-gallery-link {
       display: inline-block;
-      margin-left: 8px;
-      padding: 6px 10px;
+      margin-left: 6px;
+      padding: 6px 12px;
       border-radius: 8px;
-      background: linear-gradient(135deg, rgba(138,79,255,0.08), rgba(255,92,138,0.06));
+      background: linear-gradient(135deg, rgba(138,79,255,0.12), rgba(255,92,138,0.08));
       color: var(--accent);
       font-weight: 800;
       text-decoration: none;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
     }
 
-    .gallery-link-wrap {
-      margin: 16px auto 0;
-      text-align: center;
+    .open-gallery-link:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(255, 92, 138, 0.2);
     }
 
-    .gallery-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 16px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: white;
-      font-weight: 800;
-      text-decoration: none;
-      box-shadow: 0 12px 24px rgba(255, 92, 138, 0.24);
+    .gallery-links-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .gallery-links-row .open-gallery-link {
+      margin-left: 0;
     }
 
     @keyframes cakeBounce {
@@ -776,9 +741,28 @@
       animation: shimmer 1.5s ease-in-out infinite;
       margin: 0 4px;
     }
+
+    #fireworks-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      background: #0a0015;
+    }
+
+    body > *:not(#fireworks-canvas) {
+      position: relative;
+      z-index: 1;
+    }
   </style>
 </head>
 <body>
+
+  <canvas id="fireworks-canvas" aria-hidden="true"></canvas>
+
   <input id="partyToggle" class="party-toggle" type="checkbox" />
   
   <div class="balloon balloon-1" aria-hidden="true"></div>
@@ -798,29 +782,17 @@
     <div class="birthday-cake">🎂</div>
     <div class="personalized-name">
       <div class="name-input-group">
-        <label class="name-label" for="birthdayName">Who's celebrating today?</label>
-        <input id="birthdayName" class="name-input" type="text" placeholder="Enter your name" maxlength="30" />
+        <label class="name-label" for="birthdayName">Enter name to unlock 🎂</label>
+        <input id="birthdayName" class="name-input" type="text" maxlength="30" />
       </div>
-      <div class="quick-picks" aria-hidden="false">
-        <input id="qn-manasa" class="quick-radio" type="radio" name="quickName" />
-        <label for="qn-manasa" class="quick-label">Manasa</label>
-        <input id="qn-anna" class="quick-radio" type="radio" name="quickName" />
-        <label for="qn-anna" class="quick-label">Anna</label>
-        <input id="qn-priya" class="quick-radio" type="radio" name="quickName" />
-        <label for="qn-priya" class="quick-label">Priya</label>
-      </div>
-
       <div id="nameDisplay" class="name-display">Your name will appear here 💫</div>
-      <div class="date-input-group" style="margin-top:10px;">
-        <label class="name-label" for="birthdayDate">Enter birthday date</label>
-        <input id="birthdayDate" class="name-input" type="date" />
-      </div>
-      <div id="ageDisplay" class="age-display"></div>
-      <div class="name-picked manasa">🎉 Happy Birthday, Manasa! 💖 🎉</div>
-      <div class="name-picked anna">🎉 Happy Birthday, Anna! 💖 🎉</div>
-      <div class="name-picked priya">🎉 Happy Birthday, Priya! 💖 🎉</div>
-      <div class="gallery-link-wrap">
-        <a class="gallery-link" href="year-gallery.html" target="_blank" rel="noopener">Open Year Gallery 📸</a>
+      <div id="nameError" class="name-error">😔 Sorry, this is not your name. Please try again!</div>
+      <div class="open-gallery-note">📸 View our memories:
+        <div class="gallery-links-row">
+          <a class="open-gallery-link" href="year-gallery.html" target="_blank" rel="noopener">Open Year Gallery 🖼️</a>
+          <a class="open-gallery-link" href="cutehbd.html" target="_blank" rel="noopener">Cute Birthday Card 💜</a>
+          <a class="open-gallery-link" href="fireworks.html" target="_blank" rel="noopener">Fireworks 🎆</a>
+        </div>
       </div>
     </div>
     <div class="badge-line">🎂 Birthday Wishes ✨</div>
@@ -909,7 +881,6 @@
     </div>
 
     <div class="party-burst" aria-hidden="true">
-      
       <span>💥</span>
       <span>🎊</span>
       <span>🤪</span>
@@ -934,68 +905,158 @@
     (function() {
       const nameInput = document.getElementById('birthdayName');
       const nameDisplay = document.getElementById('nameDisplay');
-      const dateInput = document.getElementById('birthdayDate');
-      const ageDisplay = document.getElementById('ageDisplay');
-      
-      if (!nameInput || !nameDisplay) return;
-      
+      const nameError = document.getElementById('nameError');
+
+      if (!nameInput || !nameDisplay || !nameError) return;
+
       function updateDisplay() {
         const trimmedName = nameInput.value.trim();
-        if (trimmedName) {
-          nameDisplay.textContent = '🎉 Happy Birthday, ' + trimmedName + '! 💖 🎉';
-          nameDisplay.style.fontWeight = '900';
-          nameDisplay.style.color = '#ff5c8a';
-          nameDisplay.style.display = 'block';
-        } else {
-          nameDisplay.textContent = 'Your name will appear here once you type 💫';
-          nameDisplay.style.fontWeight = '800';
-          nameDisplay.style.color = 'rgba(255, 92, 138, 0.6)';
+        if (!trimmedName) {
           nameDisplay.style.display = 'none';
-        }
-      }
-      
-      nameInput.addEventListener('input', updateDisplay);
-      nameInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') updateDisplay(); });
-      nameInput.addEventListener('keyup', updateDisplay);
-      nameInput.addEventListener('change', updateDisplay);
-      
-      function computeAgeFromDOB(dobString) {
-        const d = new Date(dobString);
-        if (isNaN(d)) return null;
-        const today = new Date();
-        let age = today.getFullYear() - d.getFullYear();
-        const m = today.getMonth() - d.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--;
-        return age;
-      }
-
-      function ordinal(n) {
-        const s = ["th","st","nd","rd"], v = n%100;
-        return (s[(v-20)%10]||s[v]||s[0]);
-      }
-
-      function updateAgeDisplay() {
-        if (!dateInput || !ageDisplay) return;
-        const val = dateInput.value;
-        if (!val) { ageDisplay.style.display = 'none'; return; }
-        const age = computeAgeFromDOB(val);
-        if (age === null || age < 0) {
-          ageDisplay.textContent = 'Invalid date';
-          ageDisplay.style.display = 'block';
+          nameError.style.display = 'none';
           return;
         }
-        const namePart = nameInput.value.trim() ? (', ' + nameInput.value.trim()) : '';
-        ageDisplay.textContent = `🎉 Happy ${age}${ordinal(age)} Birthday${namePart}! 💖`;
-        ageDisplay.style.display = 'block';
+        if (trimmedName.toLowerCase() === 'chikklu') {
+          nameDisplay.textContent = '🎉 Happy Birthday, Chikklu! 💖 🎉';
+          nameDisplay.style.display = 'block';
+          nameError.style.display = 'none';
+        } else {
+          nameDisplay.style.display = 'none';
+          nameError.style.display = 'block';
+        }
       }
 
-      if (dateInput) {
-        dateInput.addEventListener('change', updateAgeDisplay);
-        dateInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') updateAgeDisplay(); });
-      }
-      
+      nameInput.addEventListener('input', updateDisplay);
+      nameInput.addEventListener('keyup', updateDisplay);
+      nameInput.addEventListener('change', updateDisplay);
+
       updateDisplay();
-      updateAgeDisplay();
+    })();
+  </script>
+
+  <script>
+    (function () {
+      const canvas = document.getElementById('fireworks-canvas');
+      const ctx = canvas.getContext('2d');
+
+      function resize() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      class Particle {
+        constructor(x, y, color) {
+          this.x = x; this.y = y; this.color = color;
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 6 + 1.5;
+          this.vx = Math.cos(angle) * speed;
+          this.vy = Math.sin(angle) * speed;
+          this.alpha = 1;
+          this.decay = Math.random() * 0.015 + 0.012;
+          this.radius = Math.random() * 3 + 1.5;
+          this.gravity = 0.12;
+        }
+        update() {
+          this.vx *= 0.97; this.vy *= 0.97;
+          this.vy += this.gravity;
+          this.x += this.vx; this.y += this.vy;
+          this.alpha -= this.decay;
+        }
+        draw() {
+          ctx.save();
+          ctx.globalAlpha = Math.max(this.alpha, 0);
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.shadowColor = this.color;
+          ctx.shadowBlur = 8;
+          ctx.fill();
+          ctx.restore();
+        }
+        isDead() { return this.alpha <= 0; }
+      }
+
+      class Rocket {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = canvas.height;
+          this.targetY = Math.random() * canvas.height * 0.5 + 60;
+          this.speed = Math.random() * 4 + 6;
+          this.color = randomColor();
+          this.trail = [];
+        }
+        update() {
+          this.trail.push({ x: this.x, y: this.y });
+          if (this.trail.length > 12) this.trail.shift();
+          this.y -= this.speed;
+        }
+        draw() {
+          for (let i = 0; i < this.trail.length; i++) {
+            const t = this.trail[i];
+            ctx.save();
+            ctx.globalAlpha = (i / this.trail.length) * 0.5;
+            ctx.beginPath();
+            ctx.arc(t.x, t.y, 2, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.shadowColor = this.color;
+            ctx.shadowBlur = 6;
+            ctx.fill();
+            ctx.restore();
+          }
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+          ctx.fillStyle = '#fff';
+          ctx.shadowColor = this.color;
+          ctx.shadowBlur = 12;
+          ctx.fill();
+          ctx.restore();
+        }
+        hasReached() { return this.y <= this.targetY; }
+      }
+
+      const COLORS = [
+        '#ff5c8a','#ff8a3d','#ffd36e','#7fffb0',
+        '#5ce1ff','#c77dff','#ff4dac','#fff176',
+        '#ff6b6b','#4dd0e1','#a5d6a7','#ffab40',
+      ];
+      function randomColor() { return COLORS[Math.floor(Math.random() * COLORS.length)]; }
+
+      function explode(x, y) {
+        const count = Math.floor(Math.random() * 80 + 100);
+        const c1 = randomColor(), c2 = randomColor();
+        const parts = [];
+        for (let i = 0; i < count; i++)
+          parts.push(new Particle(x, y, Math.random() < 0.5 ? c1 : c2));
+        return parts;
+      }
+
+      let rockets = [], particles = [];
+      function launchRocket() { rockets.push(new Rocket()); }
+      setInterval(launchRocket, 800);
+      launchRocket();
+
+      function loop() {
+        ctx.fillStyle = 'rgba(10, 0, 21, 0.22)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (let i = rockets.length - 1; i >= 0; i--) {
+          const r = rockets[i];
+          r.update(); r.draw();
+          if (r.hasReached()) {
+            particles.push(...explode(r.x, r.y));
+            rockets.splice(i, 1);
+          }
+        }
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.update(); p.draw();
+          if (p.isDead()) particles.splice(i, 1);
+        }
+        requestAnimationFrame(loop);
+      }
+      loop();
     })();
   </script>
 </body>
