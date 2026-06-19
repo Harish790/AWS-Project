@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bestie Quiz 💖</title>
+  <style>
+    :root {
+      --pink: #ff5c8a;
+      --peach: #ff8a3d;
+      --yellow: #ffd36e;
+      --purple: #c77dff;
+      --bg1: #ffb6c1;
+      --bg2: #ffd36e;
+      --card: rgba(255,255,255,0.94);
+      --text: #2f2a39;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top left, rgba(255,255,255,0.35), transparent 28%),
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+      color: var(--text);
+    }
+
+    .quiz-card {
+      width: min(100%, 580px);
+      background: var(--card);
+      border-radius: 32px;
+      padding: 44px 32px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(66,33,11,0.18);
+      border: 2px solid rgba(255,255,255,0.8);
+      backdrop-filter: blur(12px);
+      animation: riseIn 0.7s ease-out;
+    }
+
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(28px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Steps */
+    .step { display: none; }
+    .step.active { display: block; animation: riseIn 0.5s ease-out; }
+
+    /* Progress bar */
+    .progress-wrap {
+      width: 100%;
+      height: 8px;
+      background: rgba(255,92,138,0.15);
+      border-radius: 999px;
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--pink), var(--peach));
+      border-radius: 999px;
+      transition: width 0.5s ease;
+    }
+
+    /* Step icon + title */
+    .step-icon { font-size: 3rem; margin-bottom: 10px; }
+
+    h2 {
+      font-size: clamp(1.3rem, 4vw, 1.9rem);
+      font-weight: 900;
+      color: var(--pink);
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: rgba(47,42,57,0.65);
+      margin-bottom: 28px;
+    }
+
+    /* Input */
+    .quiz-input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2.5px solid rgba(255,92,138,0.35);
+      border-radius: 14px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      background: rgba(255,255,255,0.7);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .quiz-input:focus {
+      border-color: var(--pink);
+      box-shadow: 0 0 0 4px rgba(255,92,138,0.15);
+    }
+    .quiz-input::placeholder { color: rgba(255,92,138,0.4); font-weight: 400; }
+
+    /* Primary button */
+    .btn-primary {
+      display: inline-block;
+      padding: 14px 32px;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--pink), var(--peach));
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(255,92,138,0.3);
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 14px 30px rgba(255,92,138,0.4);
+    }
+
+    /* Yes / No buttons */
+    .yn-area {
+      position: relative;
+      min-height: 160px;
+      margin: 24px 0;
+    }
+
+    .btn-yes {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      padding: 14px 36px;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #43e97b, #38f9d7);
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(67,233,123,0.3);
+      transition: transform 0.18s, box-shadow 0.18s;
+      z-index: 2;
+    }
+    .btn-yes:hover {
+      transform: translate(-50%, -50%) scale(1.06);
+      box-shadow: 0 14px 30px rgba(67,233,123,0.4);
+    }
+
+    .btn-no {
+      position: absolute;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff6b6b, #ee0979);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(238,9,121,0.25);
+      transition: top 0.35s cubic-bezier(.68,-0.55,.27,1.55),
+                  left 0.35s cubic-bezier(.68,-0.55,.27,1.55),
+                  transform 0.2s;
+      z-index: 2;
+    }
+
+    .no-gone-msg {
+      display: none;
+      margin-top: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--pink);
+    }
+
+    /* MCQ option buttons */
+    .mcq-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .btn-mcq {
+      padding: 12px 22px;
+      border: 2.5px solid rgba(255,92,138,0.25);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.7);
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-mcq:hover, .btn-mcq.selected {
+      background: linear-gradient(135deg, var(--pink), var(--peach));
+      color: #fff;
+      border-color: transparent;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255,92,138,0.3);
+    }
+
+    /* Final screen */
+    .final-emoji { font-size: 4rem; margin-bottom: 14px; }
+    .final-title {
+      font-size: clamp(1.5rem, 5vw, 2.4rem);
+      font-weight: 900;
+      color: var(--pink);
+      margin-bottom: 10px;
+    }
+    .final-summary {
+      margin: 20px auto;
+      max-width: 460px;
+      padding: 18px 20px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255,92,138,0.08), rgba(255,138,61,0.06));
+      border: 2px dashed rgba(255,92,138,0.25);
+      font-size: 0.97rem;
+      line-height: 1.9;
+      text-align: left;
+    }
+    .final-summary .row { display: flex; gap: 8px; }
+    .final-summary .label { font-weight: 800; color: var(--pink); min-width: 130px; }
+    .final-summary .val { font-weight: 600; color: var(--text); }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 24px;
+      padding: 12px 28px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(255,92,138,0.12), rgba(255,138,61,0.1));
+      color: var(--pink);
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .back-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255,92,138,0.2);
+    }
+
+    /* Input error */
+    .err-msg {
+      color: #e53935;
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-top: -14px;
+      margin-bottom: 14px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="quiz-card">
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progressBar" style="width:0%"></div>
+  </div>
+
+  <!-- ── STEP 1 : Name ── -->
+  <div class="step active" id="step1">
+    <div class="step-icon">👋</div>
+    <h2>Hey there! What's your name?</h2>
+    <p class="subtitle">Let's get to know each other first 🌸</p>
+    <input id="nameInput" class="quiz-input" type="text" placeholder="Type your name here..." maxlength="30" />
+    <div class="err-msg" id="nameErr">Please enter your name to continue 🥺</div>
+    <button class="btn-primary" onclick="startQuiz()">Let's Go! 🚀</button>
+  </div>
+
+  <!-- ── STEP 2 : Best friend? (No runs away) ── -->
+  <div class="step" id="step2">
+    <div class="step-icon">💖</div>
+    <h2 id="q2title">Are you my fav bestfriend? 🥰</h2>
+    <p class="subtitle">Choose wisely… 👀</p>
+
+    <div class="yn-area" id="yn1">
+      <button class="btn-yes" id="yes1" onclick="nextStep(3)">Yes! 😊</button>
+      <button class="btn-no"  id="no1"  style="top:20%;left:70%">No 😐</button>
+    </div>
+    <p class="no-gone-msg" id="noGone1">😂 "No" ran away! Looks like you have no choice but to click Yes!</p>
+  </div>
+
+  <!-- ── STEP 3 : Are you sure? (No runs away again) ── -->
+  <div class="step" id="step3">
+    <div class="step-icon">🤔</div>
+    <h2>Are you SURE you're my best friend?</h2>
+    <p class="subtitle">Think carefully before answering… 😏</p>
+
+    <div class="yn-area" id="yn2">
+      <button class="btn-yes" id="yes2" onclick="nextStep(4)">100% Yes! 💯</button>
+      <button class="btn-no"  id="no2"  style="top:20%;left:70%">Umm no? 😅</button>
+    </div>
+    <p class="no-gone-msg" id="noGone2">🏃 "No" escaped again!! Just click Yes already 😂</p>
+  </div>
+
+  <!-- ── STEP 4 : Favourite food ── -->
+  <div class="step" id="step4">
+    <div class="step-icon">🍕</div>
+    <h2>What is your favourite food?</h2>
+    <p class="subtitle">Don't say salad 😅</p>
+    <input id="foodInput" class="quiz-input" type="text" placeholder="e.g. Pizza, Biryani, Ice cream..." maxlength="40" />
+    <div class="err-msg" id="foodErr">Tell me your fav food first! 🍔</div>
+    <button class="btn-primary" onclick="saveAndNext('foodInput','foodErr','foodVal', 5)">Next ➡️</button>
+  </div>
+
+  <!-- ── STEP 5 : Favourite movie / show ── -->
+  <div class="step" id="step5">
+    <div class="step-icon">🎬</div>
+    <h2>What's your favourite movie or show?</h2>
+    <p class="subtitle">I'm judging you based on this 👀😂</p>
+    <input id="movieInput" class="quiz-input" type="text" placeholder="e.g. Friends, Titanic, KGF..." maxlength="40" />
+    <div class="err-msg" id="movieErr">C'mon, everyone has a fav! 🍿</div>
+    <button class="btn-primary" onclick="saveAndNext('movieInput','movieErr','movieVal', 6)">Next ➡️</button>
+  </div>
+
+  <!-- ── STEP 6 : Favourite memory ── -->
+  <div class="step" id="step6">
+    <div class="step-icon">💭</div>
+    <h2>What is our favourite memory together?</h2>
+    <p class="subtitle">Even a tiny moment counts 🥹</p>
+    <input id="memoryInput" class="quiz-input" type="text" placeholder="That one time we..." maxlength="60" />
+    <div class="err-msg" id="memoryErr">Share a memory, no matter how small 💛</div>
+    <button class="btn-primary" onclick="saveAndNext('memoryInput','memoryErr','memoryVal', 7)">Next ➡️</button>
+  </div>
+
+  <!-- ── STEP 7 : Friendship rating ── -->
+  <div class="step" id="step7">
+    <div class="step-icon">⭐</div>
+    <h2>Rate our friendship out of 10!</h2>
+    <p class="subtitle">Only 10 is the correct answer 😜</p>
+    <div class="mcq-grid" id="ratingGrid"></div>
+    <div class="err-msg" id="ratingErr" style="display:none;">Please pick a number! ⭐</div>
+    <button class="btn-primary" onclick="submitRating()">Finish! 🎉</button>
+  </div>
+
+  <!-- ── FINAL ── -->
+  <div class="step" id="stepFinal">
+    <div class="final-emoji">🎉</div>
+    <div class="final-title">You passed the Bestie Test! 💖</div>
+    <p class="subtitle">Here's everything I know about my bestie now 🌸</p>
+    <div class="final-summary" id="finalSummary"></div>
+    <br/>
+    <a class="back-link" href="index.html">← Back to Birthday Card 🎂</a>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  // ── Data store ──
+  const data = { name: '', food: '', movie: '', memory: '', rating: '' };
+
+  // Total quiz steps (excluding final)
+  const TOTAL = 7;
+
+  function setProgress(step) {
+    const pct = Math.round(((step - 1) / TOTAL) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+  }
+
+  function showStep(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById('step' + n) || document.getElementById('stepFinal');
+    if (el) el.classList.add('active');
+    if (n !== 'Final') setProgress(n);
+  }
+
+  // ── Step 1: Name ──
+  window.startQuiz = function () {
+    const val = document.getElementById('nameInput').value.trim();
+    if (!val) { document.getElementById('nameErr').style.display = 'block'; return; }
+    document.getElementById('nameErr').style.display = 'none';
+    data.name = val;
+    document.getElementById('q2title').textContent = 'Hey ' + val + '! Are you my fav bestfriend? 🥰';
+    nextStep(2);
+  };
+
+  // ── Generic next ──
+  window.nextStep = function (n) { showStep(n); };
+
+  // ── Save input & go next ──
+  window.saveAndNext = function (inputId, errId, key, next) {
+    const val = document.getElementById(inputId).value.trim();
+    if (!val) { document.getElementById(errId).style.display = 'block'; return; }
+    document.getElementById(errId).style.display = 'none';
+    data[key.replace('Val', '')] = val;
+    showStep(next);
+  };
+
+  // ── No-button escape logic ──
+  function setupRunawayNo(noId, goneId, maxEscapes) {
+    const btn = document.getElementById(noId);
+    const msg = document.getElementById(goneId);
+    const area = btn.closest('.yn-area');
+    let escapes = 0;
+
+    // Predefined positions (top%, left%) to jump to
+    const positions = [
+      { top: '10%',  left: '10%' },
+      { top: '60%',  left: '65%' },
+      { top: '5%',   left: '55%' },
+      { top: '65%',  left: '8%'  },
+    ];
+
+    btn.addEventListener('mouseenter', function () {
+      if (escapes >= maxEscapes) return;
+      const pos = positions[escapes % positions.length];
+      btn.style.top  = pos.top;
+      btn.style.left = pos.left;
+      escapes++;
+      if (escapes >= maxEscapes) {
+        // After max hovers, remove the button
+        setTimeout(function () {
+          btn.style.display = 'none';
+          msg.style.display = 'block';
+        }, 400);
+      }
+    });
+
+    // Clicking No also makes it run away (just in case they catch it)
+    btn.addEventListener('click', function () {
+      if (escapes < maxEscapes) {
+        const pos = positions[escapes % positions.length];
+        btn.style.top  = pos.top;
+        btn.style.left = pos.left;
+        escapes++;
+      }
+    });
+  }
+
+  setupRunawayNo('no1', 'noGone1', 2);
+  setupRunawayNo('no2', 'noGone2', 2);
+
+  // ── Step 7: Rating grid ──
+  const grid = document.getElementById('ratingGrid');
+  for (let i = 1; i <= 10; i++) {
+    const b = document.createElement('button');
+    b.className = 'btn-mcq';
+    b.textContent = i + (i === 10 ? ' 🌟' : '');
+    b.dataset.val = i;
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.btn-mcq').forEach(x => x.classList.remove('selected'));
+      b.classList.add('selected');
+      data.rating = b.dataset.val;
+      document.getElementById('ratingErr').style.display = 'none';
+    });
+    grid.appendChild(b);
+  }
+
+  window.submitRating = function () {
+    if (!data.rating) { document.getElementById('ratingErr').style.display = 'block'; return; }
+    buildFinal();
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById('stepFinal').classList.add('active');
+    document.getElementById('progressBar').style.width = '100%';
+  };
+
+  function buildFinal() {
+    const s = document.getElementById('finalSummary');
+    const rows = [
+      { label: '👤 Name',        val: data.name   },
+      { label: '🍕 Fav Food',    val: data.food   },
+      { label: '🎬 Fav Show',    val: data.movie  },
+      { label: '💭 Our Memory',  val: data.memory },
+      { label: '⭐ Friendship',  val: data.rating + '/10' },
+    ];
+    s.innerHTML = rows.map(r =>
+      '<div class="row"><span class="label">' + r.label + ':</span>' +
+      '<span class="val">' + r.val + '</span></div>'
+    ).join('');
+  }
+
+  // ── Enter key support ──
+  ['nameInput','foodInput','movieInput','memoryInput'].forEach(function(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        if      (id === 'nameInput')   window.startQuiz();
+        else if (id === 'foodInput')   window.saveAndNext('foodInput','foodErr','food', 5);
+        else if (id === 'movieInput')  window.saveAndNext('movieInput','movieErr','movie', 6);
+        else if (id === 'memoryInput') window.saveAndNext('memoryInput','memoryErr','memory', 7);
+      }
+    });
+  });
+
+  setProgress(1);
+})();
+</script>
+</body>
+</html>
