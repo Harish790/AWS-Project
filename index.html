@@ -23,9 +23,11 @@
       margin: 0;
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       padding: 24px;
+      padding-top: 40px;
       background:
         radial-gradient(circle at top left, rgba(255, 255, 255, 0.35), transparent 28%),
         linear-gradient(135deg, var(--bg1), var(--bg2));
@@ -753,7 +755,7 @@
       background: #0a0015;
     }
 
-    body > *:not(#fireworks-canvas) {
+    main.birthday-card, footer {
       position: relative;
       z-index: 1;
     }
@@ -1060,5 +1062,25 @@
       loop();
     })();
   </script>
+
+  <footer style="
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 20px 16px 28px;
+    font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.9;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    width: 100%;
+  ">
+    <div style="font-size:1.2rem; margin-bottom:6px;">💖 🎂 💖</div>
+    <div>© 2026 Harish — All Rights Reserved (especially the right to never leave Manasa's life 😤)</div>
+    <div>Made with 99% love, 1% panic, and zero plans to stop being her bestie. 🥹</div>
+    <div style="margin-top:4px; font-size:0.75rem; opacity:0.6;">
+      Unauthorized removal of Harish from Manasa's friend list is strictly prohibited and punishable by unlimited guilt trips. 🚫
+    </div>
+  </footer>
 </body>
 </html>
