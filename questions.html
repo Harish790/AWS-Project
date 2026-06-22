@@ -127,8 +127,13 @@
     /* Yes / No buttons */
     .yn-area {
       position: relative;
-      min-height: 160px;
+      min-height: 200px;
       margin: 24px 0;
+    }
+
+    @media (max-width: 480px) {
+      .yn-area { min-height: 240px; }
+      .btn-no  { font-size: 0.95rem; padding: 11px 22px; }
     }
 
     .btn-yes {
@@ -244,6 +249,42 @@
       box-shadow: 0 8px 20px rgba(255,92,138,0.2);
     }
 
+    .share-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .btn-share {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 22px;
+      border: none;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .btn-share:hover {
+      transform: translateY(-2px) scale(1.04);
+    }
+    .btn-copy   { background: linear-gradient(135deg,#6c63ff,#a78bfa); color:#fff; box-shadow:0 8px 20px rgba(108,99,255,0.3); }
+    .btn-email  { background: linear-gradient(135deg,#ff5c8a,#ff8a3d); color:#fff; box-shadow:0 8px 20px rgba(255,92,138,0.3); }
+    .btn-wa     { background: linear-gradient(135deg,#25d366,#128c7e);  color:#fff; box-shadow:0 8px 20px rgba(37,211,102,0.3); }
+
+    .copy-toast {
+      display: none;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #6c63ff;
+    }
+
     /* Input error */
     .err-msg {
       color: #e53935;
@@ -345,6 +386,14 @@
     <div class="final-title">You passed the Bestie Test! 💖</div>
     <p class="subtitle">Here's everything I know about my bestie now 🌸</p>
     <div class="final-summary" id="finalSummary"></div>
+
+    <div class="share-row">
+      <button class="btn-share btn-copy" onclick="copyAnswers()">📋 Copy Answers</button>
+      <a id="emailBtn" class="btn-share btn-email" href="#">📧 Send via Email</a>
+      <a id="waBtn"    class="btn-share btn-wa"    href="#" target="_blank" rel="noopener">💬 Share on WhatsApp</a>
+    </div>
+    <p class="copy-toast" id="copyToast">✅ Copied to clipboard!</p>
+
     <br/>
     <a class="back-link" href="index.html">← Back to Birthday Card 🎂</a>
   </div>
@@ -397,40 +446,42 @@
   function setupRunawayNo(noId, goneId, maxEscapes) {
     const btn = document.getElementById(noId);
     const msg = document.getElementById(goneId);
-    const area = btn.closest('.yn-area');
     let escapes = 0;
 
-    // Predefined positions (top%, left%) to jump to
     const positions = [
-      { top: '10%',  left: '10%' },
-      { top: '60%',  left: '65%' },
-      { top: '5%',   left: '55%' },
-      { top: '65%',  left: '8%'  },
+      { top: '8%',   left: '8%'  },
+      { top: '62%',  left: '58%' },
+      { top: '6%',   left: '52%' },
+      { top: '60%',  left: '5%'  },
     ];
 
-    btn.addEventListener('mouseenter', function () {
+    function runAway() {
       if (escapes >= maxEscapes) return;
       const pos = positions[escapes % positions.length];
       btn.style.top  = pos.top;
       btn.style.left = pos.left;
       escapes++;
       if (escapes >= maxEscapes) {
-        // After max hovers, remove the button
         setTimeout(function () {
           btn.style.display = 'none';
           msg.style.display = 'block';
-        }, 400);
+        }, 350);
       }
-    });
+    }
 
-    // Clicking No also makes it run away (just in case they catch it)
-    btn.addEventListener('click', function () {
-      if (escapes < maxEscapes) {
-        const pos = positions[escapes % positions.length];
-        btn.style.top  = pos.top;
-        btn.style.left = pos.left;
-        escapes++;
-      }
+    // Desktop: escape on hover
+    btn.addEventListener('mouseenter', runAway);
+
+    // Mobile: escape on touch (fires before click, so button moves away)
+    btn.addEventListener('touchstart', function (e) {
+      e.preventDefault(); // prevent ghost click
+      runAway();
+    }, { passive: false });
+
+    // Fallback: if somehow clicked, escape instead of triggering
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      runAway();
     });
   }
 
@@ -474,6 +525,52 @@
       '<div class="row"><span class="label">' + r.label + ':</span>' +
       '<span class="val">' + r.val + '</span></div>'
     ).join('');
+
+    // Build share text
+    const text = [
+      'Bestie Quiz Answers 💖',
+      '--------------------------',
+      '👤 Name: '       + data.name,
+      '🍕 Fav Food: '  + data.food,
+      '🎬 Fav Show: '  + data.movie,
+      '💭 Memory: '    + data.memory,
+      '⭐ Friendship: ' + data.rating + '/10',
+    ].join('\n');
+
+    // Email link
+    document.getElementById('emailBtn').href =
+      'mailto:?subject=' + encodeURIComponent('Bestie Quiz Answers 💖') +
+      '&body=' + encodeURIComponent(text);
+
+    // WhatsApp link
+    document.getElementById('waBtn').href =
+      'https://wa.me/?text=' + encodeURIComponent(text);
+
+    // Store text for copy
+    window._shareText = text;
+  }
+
+  window.copyAnswers = function () {
+    if (!window._shareText) return;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(window._shareText).then(showToast);
+    } else {
+      // Fallback for older mobile browsers
+      const ta = document.createElement('textarea');
+      ta.value = window._shareText;
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast();
+    }
+  };
+
+  function showToast() {
+    const t = document.getElementById('copyToast');
+    t.style.display = 'block';
+    setTimeout(function () { t.style.display = 'none'; }, 2500);
   }
 
   // ── Enter key support ──

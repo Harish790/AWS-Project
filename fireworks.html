@@ -98,16 +98,92 @@
       transform: translateX(-50%) translateY(-3px) scale(1.04);
       box-shadow: 0 14px 32px rgba(255, 92, 138, 0.55);
     }
+
+    /* ── Countdown ── */
+    .countdown-wrap {
+      margin-top: 20px;
+    }
+
+    .countdown-label {
+      font-size: clamp(0.85rem, 2vw, 1.1rem);
+      color: #ffd36e;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      text-shadow: 0 0 10px rgba(255,211,110,0.6);
+    }
+
+    .countdown-boxes {
+      display: flex;
+      justify-content: center;
+      gap: clamp(8px, 2vw, 20px);
+    }
+
+    .cd-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,92,138,0.35);
+      border-radius: 14px;
+      padding: clamp(10px,2vw,16px) clamp(12px,3vw,22px);
+      min-width: clamp(56px, 12vw, 80px);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 20px rgba(255,92,138,0.15);
+    }
+
+    .cd-num {
+      font-size: clamp(1.8rem, 5vw, 3.2rem);
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 0 12px #ff5c8a, 0 0 28px #ff2d6b;
+      line-height: 1;
+    }
+
+    .cd-unit {
+      font-size: clamp(0.6rem, 1.5vw, 0.8rem);
+      color: #ffd36e;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+
+    .birthday-msg { display: none; }
+    .is-birthday .birthday-msg  { display: block; }
+    .is-birthday .countdown-wrap { display: none; }
+    .is-birthday .pre-title { display: none; }
   </style>
 </head>
 <body>
 
   <canvas id="birthday"></canvas>
 
-  <div class="message">
-    <h1>Happy Birthday! 🎂</h1>
-    <p>Wishing you the most magical day ever ✨</p>
-    <div class="emojis">🎆 🎇 🎉 🥳 🎈</div>
+  <div class="message" id="mainMsg">
+    <!-- Before birthday -->
+    <div class="pre-title">
+      <h1 style="font-size:clamp(1.4rem,4vw,2.8rem);">Manasa's Birthday Countdown! 🎂</h1>
+      <p style="margin-top:10px;">June 23 is almost here — get ready! 🎉</p>
+    </div>
+
+    <!-- Countdown timer -->
+    <div class="countdown-wrap">
+      <div class="countdown-label">Time left until the big day ✨</div>
+      <div class="countdown-boxes">
+        <div class="cd-box"><span class="cd-num" id="cdDays">00</span><span class="cd-unit">Days</span></div>
+        <div class="cd-box"><span class="cd-num" id="cdHours">00</span><span class="cd-unit">Hours</span></div>
+        <div class="cd-box"><span class="cd-num" id="cdMins">00</span><span class="cd-unit">Mins</span></div>
+        <div class="cd-box"><span class="cd-num" id="cdSecs">00</span><span class="cd-unit">Secs</span></div>
+      </div>
+    </div>
+
+    <!-- Show only on birthday -->
+    <div class="birthday-msg">
+      <h1>Happy Birthday Manasa! 🎂</h1>
+      <p>Wishing you the most magical day ever ✨</p>
+      <div class="emojis">🎆 🎇 🎉 🥳 🎈</div>
+    </div>
   </div>
 
   <a class="back-btn" href="index.html">← Back to Birthday Card</a>
@@ -256,6 +332,43 @@
       }
 
       loop();
+
+      // ── Countdown to June 23 ──
+      (function countdown() {
+        const msg = document.getElementById('mainMsg');
+
+        function pad(n) { return String(n).padStart(2, '0'); }
+
+        function tick() {
+          const now  = new Date();
+          const year = now.getFullYear();
+          let target = new Date(year, 5, 23, 0, 0, 0, 0);
+          // If already past June 23 this year, count to next year
+          if (now >= new Date(year, 5, 24, 0, 0, 0, 0)) {
+            target = new Date(year + 1, 5, 23, 0, 0, 0, 0);
+          }
+          const diff = target - now;
+
+          // It's her birthday today!
+          if (diff <= 0 && now < new Date(year, 5, 24, 0, 0, 0, 0)) {
+            msg.classList.add('is-birthday');
+            return;
+          }
+
+          const days  = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const mins  = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const secs  = Math.floor((diff % (1000 * 60)) / 1000);
+
+          document.getElementById('cdDays').textContent  = pad(days);
+          document.getElementById('cdHours').textContent = pad(hours);
+          document.getElementById('cdMins').textContent  = pad(mins);
+          document.getElementById('cdSecs').textContent  = pad(secs);
+
+          setTimeout(tick, 1000);
+        }
+        tick();
+      })();
 
       canvas.addEventListener('click', function (e) {
         particles.push(...explode(e.clientX, e.clientY));
