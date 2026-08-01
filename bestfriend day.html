@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>1 New Message 💌</title>
+  <link rel="stylesheet" href="bestfriend.css" />
+</head>
+<body>
+
+  <div class="page-wrap">
+    <div class="reel-frame" id="reelFrame">
+
+      <!-- Stories-style progress bar -->
+      <div class="progress-row" id="progressRow"></div>
+
+      <div class="status-bar">
+        <span id="clock">9:41</span>
+        <span>🔋📶</span>
+      </div>
+
+      <div class="bg-glow"></div>
+      <div class="confetti-layer" id="confettiLayer"></div>
+
+      <!-- Left / right tap zones -->
+      <div class="tap-zone tap-left" id="tapLeft"></div>
+      <div class="tap-zone tap-right" id="tapRight"></div>
+
+      <!-- Slide 1: lock screen notification -->
+      <section class="slide" data-slide="1">
+        <div class="lock-time" id="bigClock">9:41</div>
+        <div class="lock-date" id="bigDate">Friday, August 1</div>
+        <div class="notif-banner">
+          <div class="notif-icon">💬</div>
+          <div class="notif-text">
+            <div class="notif-title"><span>Messages</span><span>now</span></div>
+            <div class="notif-body">Manasa: hey... open this 👀</div>
+          </div>
+        </div>
+        <div class="tap-hint">1 unread message · tap to open</div>
+      </section>
+
+      <!-- Slide 2: opening / typing -->
+      <section class="slide" data-slide="2">
+        <div class="chat-header">💬 Manasa</div>
+        <div class="chat-bubble typing">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+        <div class="tap-hint">tap to continue</div>
+      </section>
+
+      <!-- Slide 3: the big reveal -->
+      <section class="slide" data-slide="3">
+        <div class="burst-emoji">🤝💚</div>
+        <div class="reveal-title">Happy Friendship Day, Manasa! ✨</div>
+        <p class="reveal-message">
+          One unread message, one big surprise 😄<br />
+          Thank you for every laugh, every late-night chat,
+          and every memory we've made. 💫
+        </p>
+        <div class="tap-hint">tap to continue</div>
+      </section>
+
+      <!-- Slide 4: closing -->
+      <section class="slide" data-slide="4">
+        <div class="burst-emoji">🎉💚🤍🎊</div>
+        <div class="reveal-title">Forever grateful for you!</div>
+        <p class="reveal-message">Here's to our friendship and endless adventures ahead 💚✨</p>
+        <button class="replay-btn" id="replayBtn">↺ Replay</button>
+      </section>
+
+    </div>
+
+    <p class="hint-below">Tap the right/left side of the screen — just like a reel 📱</p>
+  </div>
+
+  <script src="bestfriend.js"></script>
+</body>
+</html>
